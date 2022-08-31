@@ -1,0 +1,29 @@
+# แสดง infra. สำหรับ Demo 
+# แสดงรายละเอีิยด จำนวน host,vm,spec & Diagram 
+# login เข้า VDI 
+# เปิด command line แสดงชื่อ Host & IP
+# เปิด Chrome เข้า vCenter server web : https://192.168.151.100
+
+# login เข้า vCenter
+# แสดง จำนวน host & VM และ spec ของ Openshift VM ทั้งหมด ผ่าน vCenter wev console & remote host IP
+# remote Desktop ไปที่ server IP : 192.168.151.189
+# u:addmin-01
+# p:adm#1234
+# เปิด command line แสดงชื่อ Host & IP
+
+# connect ไปที่ console ของ openshift ด้วย command
+oc login -a demo01 -u demo01 https://api.ocpcluster.gabledemo.com:6443
+# run command : oc get node
+
+
+# login เข้าไปที่ openshift cluster ผ่าน browser chromium 
+# https://console-openshift-console.apps.ocpcluster.gabledemo.com
+# u:demo01
+# p:demo01
+
+#แสดง NginX Ingress Operator ใน Openshift Operator Console
+
+#แสดง command oc get pod -n <nginx-xxxx>
+#แสดง NginX+ dashbord ผ่าน Browser
+
+#Show Code ใน GitHub -> push code ขึ้น GitHub new Repo
