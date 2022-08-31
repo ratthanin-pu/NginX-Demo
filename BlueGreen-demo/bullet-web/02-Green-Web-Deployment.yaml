@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dot-green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: greendot
+  template:
+    metadata:
+      labels:
+        app: greendot
+    spec:
+      containers:
+      - name: greendot
+        image: ratthanin/greenbullet:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: greendot-svc
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: greendot

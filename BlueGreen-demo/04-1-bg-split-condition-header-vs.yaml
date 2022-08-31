@@ -1,0 +1,34 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: bluegreen-vs
+spec:
+  host: dot.demo.ocpcluster.gabledemo.com
+  upstreams:
+  - name: greendot
+    service: greendot-svc
+    port: 80
+  - name: bluedot
+    service: bluedot-svc
+    port: 80
+  - name: reddot
+    service: reddot-svc
+    port: 80
+  routes:
+  - path: /
+    matches:
+    - conditions:
+      - header: user
+        value: testgroup
+      splits:
+      - weight: 10
+        action:
+          pass: bluedot
+      - weight: 60
+        action:
+          pass: greendot
+      - weight: 30
+        action:
+          pass: reddot
+    action:
+      pass: bluedot
