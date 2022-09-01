@@ -12,7 +12,7 @@ Demo or clip #00
 Demo or clip #01
 # remote Desktop ไปที่ server IP : 192.168.151.189
 # u:addmin-01
-# p:adm#1234
+
 # เปิด command line แสดงชื่อ Host & IP
 
 # connect ไปที่ console ของ openshift ด้วย command
@@ -23,7 +23,7 @@ oc get pod
 # login เข้าไปที่ openshift cluster ผ่าน browser chromium 
 # https://console-openshift-console.apps.ocpcluster.gabledemo.com
 # u:demo01
-# p:demo01
+
 
 #แสดง NginX Ingress Operator ใน Openshift Operator Console
 
@@ -178,7 +178,7 @@ Testing : goto chrome browser
 Grafana dashboard
 https://grafana-route-monitor-tools.apps.ocpcluster.gabledemo.com/d/VUwGrLVMz/nginx-plus-ingress-controller?orgId=1
 u: admin
-p: ueX-0N1bXJEs7g==
+
 
 
 
