@@ -47,6 +47,8 @@ oc get pod
 #Show Code ใน GitHub -> push code ขึ้น GitHub new Repo
 #Show YAML file for deploy virtual server by CRD
 
+#################################################
+
 #Deploy web dot blue
 oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/01-Blue-Web-Deployment.yaml
 
@@ -142,10 +144,36 @@ Testing : goto chrome browser
 - clear cache
 - reload web http://dot.demo.ocpcluster.gabledemo.com/
 
-0656326145 โบว์
 
+########################################################
+Use Case #4 Blue Green deployment
 
+solution : Blue Green deployment
 
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/04-1-bg-ab-test-condition-header-vs.yaml
+
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/05-bg-green-vs.yaml
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show green dot is new version
+
+Switch to blue in case of Green has a problem
+goto Virtual Server menu in OpenShift console 
+Change Upstream from greendot to bluedot
+Save & reload
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show green dot is "Blue" version
+
+########################################################
 
 
 
