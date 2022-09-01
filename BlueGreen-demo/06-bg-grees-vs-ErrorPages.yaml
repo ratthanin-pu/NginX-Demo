@@ -23,4 +23,4 @@ spec:
          body: "<center><h1>oops! We will be back shortly!</h1></center>"
     action:
        proxy:
-          upstream: bluedot
+          upstream: greendot
