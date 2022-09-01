@@ -11,6 +11,9 @@ spec:
   - name: bluedot
     service: bluedot-svc
     port: 80
+  - name: reddot
+    service: reddot-svc
+    port: 80    
   routes:
   - path: /
     action:
