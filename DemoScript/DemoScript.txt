@@ -101,21 +101,26 @@ Testing : goto chrome browser
 - clear cache
 - reload web http://dot.demo.ocpcluster.gabledemo.com/
 
-#8. Usecase #3.1
-Find out if customers like a new version beeter than the current version
+########################################################
+Use Case #2.1 Target group for Canary deployment
+
 solution : Canary Deployment with condition 
 
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-1-cannary-deployment.yaml
 
-oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/02-2-bg-ab-test.yaml
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-2-cannary-split-condition-header-vs.yaml
 
-oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-bg-split-vs.yaml
-
-oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/04-1-bg-split-condition-header-vs.yaml
-
-oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/05-bg-green-vs.yaml
-
-
-
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show blue dot is default
+- add header parameter "user" "testgroup"
+- adjust in OCP console virtugl server yaml: chage blue to red
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
 
 
 

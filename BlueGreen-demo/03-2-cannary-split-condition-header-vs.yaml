@@ -16,10 +16,16 @@ spec:
     port: 80
   routes:
   - path: /
-    splits:
-    - weight: 30
-      action:
-        pass: bluedot
-    - weight: 70
-      action:
-        pass: greendot
+    matches:
+    - conditions:
+      - header: user
+        value: testgroup
+      splits:
+      - weight: 70
+        action:
+          pass: greendot
+      - weight: 30
+        action:
+          pass: bluedot
+    action:
+      pass: bluedot
