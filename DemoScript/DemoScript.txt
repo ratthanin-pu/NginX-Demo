@@ -61,24 +61,49 @@ go to web http://dot.demo.ocpcluster.gabledemo.com/
 must show blue bullet web
 *default is blue
 
-
-Use Case #1 Test a New Version in Production
+#################################################
+Use Case #1 Test a New Version in Production by Debug routing
 #Deploy web dot green
 
 oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/02-Green-Web-Deployment.yaml
 
+#Deploy web dot red
 
-#Remove 
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/03-Red-Web-Deployment.yaml
+
+#Remove VS
 oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/01-bg-blue-vs.yaml
-
 
 #Deploy VirtualServer for Debug routing
 oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/02-1-bg-condition-header-vs.yaml
 
+#goto chrome browser 
+- clear cache
+- set header request value to "version" value = green
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+must show green with header parameter
 
+########################################################
+Use Case #2 Ensure a New Version is Stable by Canary deployment
 
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/02-1-bg-condition-header-vs.yaml
 
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-1-cannary-deployment.yaml
 
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show mix with blue 80% & green 20% 
+- adjust in OCP console virtugl server yaml: blue 30% & green 70%  
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+
+#8. Usecase #3.1
+Find out if customers like a new version beeter than the current version
+solution : Canary Deployment with condition 
 
 
 oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/02-2-bg-ab-test.yaml
@@ -97,8 +122,7 @@ oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueG
 
 
 
-#Deploy web dot red
-oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/03-Red-Web-Deployment.yaml
+
 
 
 

@@ -21,14 +21,11 @@ spec:
       - header: user
         value: testgroup
       splits:
-      - weight: 10
-        action:
-          pass: bluedot
-      - weight: 60
+      - weight: 70
         action:
           pass: greendot
       - weight: 30
         action:
-          pass: reddot
+          pass: bluedot
     action:
       pass: bluedot
