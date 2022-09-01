@@ -131,7 +131,7 @@ solution : A/B Testing with condition
 oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-2-cannary-split-condition-header-vs.yaml
 
 #Deploy VirtualServer for Cannary deployment
-oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/04-1-bg-ab-test.yaml
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/04-1-bg-ab-test-condition-header-vs.yaml
 
 Testing : goto chrome browser 
 - remove header request parameter
@@ -142,7 +142,7 @@ Testing : goto chrome browser
 - clear cache
 - reload web http://dot.demo.ocpcluster.gabledemo.com/
 
-
+0656326145 โบว์
 
 
 
