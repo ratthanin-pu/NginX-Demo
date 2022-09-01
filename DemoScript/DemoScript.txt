@@ -27,9 +27,6 @@ oc get pod
 
 #แสดง NginX Ingress Operator ใน Openshift Operator Console
 
-
-
-
 #login OpenShift ผ่าน command
 
 oc login -u opsadm -p adm1234 https://api.ocpcluster.gabledemo.com:6443
@@ -42,7 +39,7 @@ oc login -u demo01 -p demo01 https://api.ocpcluster.gabledemo.com:6443
 oc project
 oc get pod
 
-#แสดง command oc get pod -n <nginx-xxxx>
+#แสดง command oc get pod -n nginx-ingress
 
 #Show Code ใน GitHub -> push code ขึ้น GitHub new Repo
 #Show YAML file for deploy virtual server by CRD
@@ -57,7 +54,6 @@ oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueG
 #Deploy VirtualServer
 oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/01-bg-blue-vs.yaml
 
-
 # Open chrome to access web dot blue via VirtualServer
 go to web http://dot.demo.ocpcluster.gabledemo.com/
 must show blue bullet web
@@ -65,6 +61,7 @@ must show blue bullet web
 
 #################################################
 Use Case #1 Test a New Version in Production by Debug routing
+
 #Deploy web dot green
 
 oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/02-Green-Web-Deployment.yaml
