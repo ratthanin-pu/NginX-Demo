@@ -175,6 +175,10 @@ Testing : goto chrome browser
 
 ########################################################
 
+Grafana dashboard
+https://grafana-route-monitor-tools.apps.ocpcluster.gabledemo.com/d/VUwGrLVMz/nginx-plus-ingress-controller?orgId=1
+u: admin
+p: ueX-0N1bXJEs7g==
 
 
 
