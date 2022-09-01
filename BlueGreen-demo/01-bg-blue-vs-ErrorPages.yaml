@@ -1,0 +1,23 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: bluegreen-vs
+spec:
+  host: dot.demo.ocpcluster.gabledemo.com
+  upstreams:
+  - name: greendot
+    service: greendot-svc
+    port: 80
+  - name: bluedot
+    service: bluedot-svc
+    port: 80
+  routes:
+  - path: /
+    errorPages:
+    - codes: [404]
+      redirect:
+         code: 404
+         body: "Original resource not found"
+    action:
+       proxy:
+          upstream: bluedot
