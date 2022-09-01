@@ -157,7 +157,7 @@ Testing : goto chrome browser
 - remove header request parameter
 - clear cache
 - reload web http://dot.demo.ocpcluster.gabledemo.com/
-* must show green dot is new version
+* must show "Green" dot is new version
 
 Switch to blue in case of Green has a problem
 goto Virtual Server menu in OpenShift console 
@@ -169,6 +169,32 @@ Testing : goto chrome browser
 - clear cache
 - reload web http://dot.demo.ocpcluster.gabledemo.com/
 * must show green dot is "Blue" version
+
+########################################################
+Use Case #5 Custom Error Handler
+
+solution : Custom Error Handler by CRD
+
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/05-bg-green-vs.yaml
+
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/06-bg-grees-vs-ErrorPages.yaml
+
+Scale down dot-green container to 0
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show error wording "oops! We will be back shortly!"
+
+Scale up container to 1
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show green dot is "Green" version 
 
 ########################################################
 

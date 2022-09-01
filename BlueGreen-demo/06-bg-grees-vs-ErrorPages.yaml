@@ -11,13 +11,16 @@ spec:
   - name: bluedot
     service: bluedot-svc
     port: 80
+  - name: reddot
+    service: reddot-svc
+    port: 80
   routes:
   - path: /
     errorPages:
     - codes: [502]
       return:
          code: 200
-         body: "<center><h1>oops this is embarrassing! We will be back shortly!</h1></center>"
+         body: "<center><h1>oops! We will be back shortly!</h1></center>"
     action:
        proxy:
           upstream: bluedot
