@@ -122,6 +122,25 @@ Testing : goto chrome browser
 - clear cache
 - reload web http://dot.demo.ocpcluster.gabledemo.com/
 
+########################################################
+Use Case #3 A/B Testing by condigion
+
+solution : A/B Testing with condition 
+
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-2-cannary-split-condition-header-vs.yaml
+
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/04-1-bg-ab-test.yaml
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show blue dot is default
+- add header parameter "version" "green" or "red"
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
 
 
 
