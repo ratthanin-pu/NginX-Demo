@@ -203,5 +203,47 @@ https://grafana-route-monitor-tools.apps.ocpcluster.gabledemo.com/d/VUwGrLVMz/ng
 u: admin
 
 
+########################################################
+Rate limit
+
+#Deploy Cafe web
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-deployment.yaml
+
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-secret.yaml
 
 
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-vs-ratelimiting.yaml
+
+
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/rate-limit-policy.yaml
+
+
+#loop curl coffee
+
+#Mac
+for i in {1..10}; do curl -k -I -H "user-id: 1" http://coffee.demo.ocpcluster.gabledemo.com/coffee; done
+
+#Windows
+for /L %n in (1,1,50) do curl -k -I -H "user-id: 1" http://coffee.demo.ocpcluster.gabledemo.com/coffee
+
+for /L %n in (1,1,50) do curl -k -I -H "user-id: 1" http://coffee.demo.ocpcluster.gabledemo.com/tea
+
+########################################################
+Clean up
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/01-Blue-Web-Deployment.yaml
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/02-Green-Web-Deployment.yaml
+
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/03-Red-Web-Deployment.yaml
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-deployment.yaml
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-secret.yaml
+
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-vs-ratelimiting.yaml
+
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/rate-limit-policy.yaml
