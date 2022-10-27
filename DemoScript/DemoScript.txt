@@ -1,0 +1,284 @@
+Slide
+# แสดง infra. สำหรับ Demo 
+# แสดงรายละเอีิยด จำนวน host,vm,spec & Diagram 
+
+Demo or clip #01
+
+Clip
+01-Show-VirtualizationLab-infra_OCP-portal_NginX_Operator
+
+# login เข้า VDI 
+# Show vSphere infra. 
+    - vCenter server web : https://192.168.151.100
+# แสดง จำนวน host & VM และ spec ของ Openshift VM ทั้งหมด ผ่าน vCenter wev console & remote host IP
+# remote Desktop ไปที่ server IP : 192.168.151.189
+# Show web console ของ openshift
+# อธิบายส่วนของ web console Administrator
+# show Compute resource (3 master, 3 infra & worker)
+# อธิบาย Operators hub 
+# อธิบาย Installed Operators
+# Show NginX ingress controller
+# Show NginX ingress resource 
+
+
+#################################################
+#Deploy web dot blue
+
+Clip
+02-deploy-web-dot-blue-and-virtualserver-for-NginX-KIC
+
+# login ocp web console ด้วย demo01 user
+# อธิบาย web console ส่วนของ Administrator และ Developer สำหรับ dev user
+# เปิด YAML ใน github 
+# อธิบาย yaml file ในการ deploy web github 
+# deploy web ด้วยวิธี import yaml file
+
+# อธิบายหน้า Topology ในส่วนของ POD ,Replica และ Service
+# เปิด YAML ใน github 
+# อธิบาย yaml file ในการ deploy virtual server
+# เข้า web dot.demo.ocpcluster.gabledemo.com ต้อง 404 error
+# deploy web ด้วย command oc apply -f 
+# recheck virtual server 
+# เข้า web dot.demo.ocpcluster.gabledemo.com refresh ต้อง show dot blue 
+
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/01-Blue-Web-Deployment.yaml
+
+#Deploy VirtualServer
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/01-bg-blue-vs.yaml
+
+# Open chrome to access web dot blue via VirtualServer
+go to web http://dot.demo.ocpcluster.gabledemo.com/
+must show blue bullet web
+*default is blue
+
+#################################################
+
+#################################################
+Use Case #2 Test a New Version in Production by Debug routing
+
+#Deploy web dot green
+
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/02-Green-Web-Deployment.yaml
+
+#Deploy web dot red
+
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/03-Red-Web-Deployment.yaml
+
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/01-bg-blue-vs.yaml
+
+#Deploy VirtualServer for Debug routing
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/02-1-bg-condition-header-vs.yaml
+
+#goto chrome browser 
+- clear cache
+- set header request value to "version" value = green
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+must show green with header parameter
+
+########################################################
+Use Case #3 Ensure a New Version is Stable by Canary deployment
+
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/02-1-bg-condition-header-vs.yaml
+
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-1-cannary-deployment.yaml
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show mix with blue 80% & green 20% 
+- adjust in OCP console virtugl server yaml: blue 30% & green 70%  
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+
+########################################################
+Use Case #3.1 Target group for Canary deployment
+
+solution : Canary Deployment with condition 
+
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-1-cannary-deployment.yaml
+
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-2-cannary-split-condition-header-vs.yaml
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show blue dot is default
+- add header parameter "user" "testgroup"
+- adjust in OCP console virtugl server yaml: chage blue to red
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+
+########################################################
+Use Case #4 A/B Testing by condigion
+
+solution : A/B Testing with condition 
+
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/03-2-cannary-split-condition-header-vs.yaml
+
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/04-1-bg-ab-test-condition-header-vs.yaml
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show blue dot is default
+- add header parameter "version" "green" or "red"
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+
+
+########################################################
+Use Case #5 Blue Green deployment
+
+solution : Blue Green deployment
+
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/04-1-bg-ab-test-condition-header-vs.yaml
+
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/05-bg-green-vs.yaml
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show "Green" dot is new version
+
+Switch to blue in case of Green has a problem
+goto Virtual Server menu in OpenShift console 
+Change Upstream from greendot to bluedot
+Save & reload
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show green dot is "Blue" version
+
+########################################################
+Use Case #6 Custom Error Handler
+
+solution : Custom Error Handler by CRD
+
+#Remove VS
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/05-bg-green-vs.yaml
+
+#Deploy VirtualServer for Cannary deployment
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/06-bg-grees-vs-ErrorPages.yaml
+
+Scale down dot-green container to 0
+
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show error wording "oops! We will be back shortly!"
+
+Scale up container to 1
+Testing : goto chrome browser 
+- remove header request parameter
+- clear cache
+- reload web http://dot.demo.ocpcluster.gabledemo.com/
+* must show green dot is "Green" version 
+
+########################################################
+
+Grafana dashboard
+https://grafana-route-monitor-tools.apps.ocpcluster.gabledemo.com/d/VUwGrLVMz/nginx-plus-ingress-controller?orgId=1
+u: admin
+
+
+########################################################
+Rate limit
+
+#login with opsadm
+oc login -u opsadm -p adm1234 https://api.ocpcluster.gabledemo.com:6443
+
+oc project cafe-demo
+
+#Deploy Cafe web
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-deployment.yaml
+
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-secret.yaml
+
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-vs-ratelimiting.yaml
+
+oc apply -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/rate-limit-policy.yaml
+
+
+#loop curl coffee
+
+#Mac
+for i in {1..10}; do curl -k -I -H "user-id: 100" http://coffee.demo.ocpcluster.gabledemo.com/coffee; done
+
+#Windows
+#with header
+for /L %n in (1,1,20) do curl -k -I -H "user-id: 100" http://coffee.demo.ocpcluster.gabledemo.com/coffee
+
+#without header
+for /L %n in (1,1,20) do curl -k -I http://coffee.demo.ocpcluster.gabledemo.com/coffee
+
+#Web tea
+for /L %n in (1,1,20) do curl -k -I -H "user-id: 100" http://coffee.demo.ocpcluster.gabledemo.com/tea
+
+########################################################
+Clean up
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/01-Blue-Web-Deployment.yaml
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/02-Green-Web-Deployment.yaml
+
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/BlueGreen-demo/bullet-web/03-Red-Web-Deployment.yaml
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-deployment.yaml
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-secret.yaml
+
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/cafe-vs-ratelimiting.yaml
+
+
+oc delete -f https://raw.githubusercontent.com/ratthanin-pu/NginX-Demo/main/Cafe/rate-limit-policy.yaml
+
+############ 
+oc login -a demo01 -u demo01 https://api.ocpcluster.gabledemo.com:6443
+
+oc get pod
+
+# login เข้าไปที่ openshift cluster ผ่าน browser chromium 
+# https://console-openshift-console.apps.ocpcluster.gabledemo.com
+# u:demo01
+
+
+#แสดง NginX Ingress Operator ใน Openshift Operator Console
+
+#login OpenShift ผ่าน command
+
+oc login -u opsadm -p adm1234 https://api.ocpcluster.gabledemo.com:6443
+oc get node
+oc project nginx-ingress
+oc get pod
+
+
+oc login -u demo01 -p demo01 https://api.ocpcluster.gabledemo.com:6443
+oc project
+oc get pod
+
+
+#แสดง command oc get pod -n nginx-ingress
+
+#Show Code ใน GitHub -> push code ขึ้น GitHub new Repo
+#Show YAML file for deploy virtual server by CRD
+
+############
+
